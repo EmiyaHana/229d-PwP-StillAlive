@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public GameObject spinningWeaponPrefab;
     public Transform firePoint;
 
+    [HideInInspector] public float weaponScaleMultiplier = 1f;
+
     [Header("Ammo System")]
     public int maxAmmo = 10; // กระสุนสูงสุด
     private int currentAmmo;
@@ -54,7 +56,10 @@ public class PlayerController : MonoBehaviour
     {
         if (currentAmmo > 0)
         {
-            Instantiate(spinningWeaponPrefab, firePoint.position, firePoint.rotation);
+            GameObject spawnedWeapon = Instantiate(spinningWeaponPrefab, firePoint.position, firePoint.rotation);
+
+            Vector3 originalScale = spawnedWeapon.transform.localScale;
+            spawnedWeapon.transform.localScale = originalScale * weaponScaleMultiplier;
             
             currentAmmo--;
             UpdateAmmoUI();

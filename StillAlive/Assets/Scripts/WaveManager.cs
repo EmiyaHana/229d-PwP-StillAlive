@@ -24,8 +24,11 @@ public class WaveManager : MonoBehaviour
     private int zombiesAlive = 0;
     private bool isIntermission = false;
 
+    private IntermissionManager intermissionManager;
+
     void Start()
     {
+        intermissionManager = FindObjectOfType<IntermissionManager>();
         StartCoroutine(StartWave());
     }
 
@@ -33,16 +36,26 @@ public class WaveManager : MonoBehaviour
     {
         if (zombiesAlive == 0 && !isIntermission)
         {
+            isIntermission = true;
             currentWaveIndex++;
+
             if (currentWaveIndex < waves.Length)
             {
-                StartCoroutine(StartWave());
+                if(intermissionManager != null)
+                {
+                    intermissionManager.ShowIntermission();
+                }
             }
             else
             {
                 Debug.Log("Finally, YOU survive!");
             }
         }
+    }
+
+    public void StartNextWave()
+    {
+        StartCoroutine(StartWave());
     }
 
     IEnumerator StartWave()

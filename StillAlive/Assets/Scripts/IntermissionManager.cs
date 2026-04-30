@@ -1,0 +1,43 @@
+using UnityEngine;
+
+public class IntermissionManager : MonoBehaviour
+{
+    public GameObject intermissionPanel;
+    private WaveManager waveManager;
+    private PlayerController player;
+
+    void Start()
+    {
+        waveManager = FindObjectOfType<WaveManager>();
+        player = FindObjectOfType<PlayerController>();
+    }
+
+    public void ShowIntermission()
+    {
+        intermissionPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void SelectUpgradeWeapon()
+    {
+        player.weaponScaleMultiplier += 0.5f;
+
+        Debug.Log("Upgrade approve!");
+        CloseIntermission();
+    }
+
+    public void SelectMaxAmmo()
+    {
+        player.maxAmmo += 5;
+        player.AddAmmo(999);
+        Debug.Log("Increase ammo approve!");
+        CloseIntermission();
+    }
+
+    private void CloseIntermission()
+    {
+        intermissionPanel.SetActive(false);
+        Time.timeScale = 1f;
+        waveManager.StartNextWave();
+    }
+}
