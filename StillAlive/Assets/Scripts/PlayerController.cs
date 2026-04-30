@@ -10,13 +10,20 @@ public class PlayerController : MonoBehaviour
     [Header("Weapon Range")]
     public GameObject spinningWeaponPrefab;
     public Transform firePoint;
+    [HideInInspector] public float rangedDamageBonus = 0f;
 
     [HideInInspector] public float weaponScaleMultiplier = 1f;
 
     [Header("Ammo System")]
-    public int maxAmmo = 10; // กระสุนสูงสุด
+    public int maxAmmo = 10;
     private int currentAmmo;
     public TextMeshProUGUI ammoTextUI;
+
+    [Header("Melee Weapon")]
+    public Transform meleePoint;
+    public float meleeRange = 1.5f;
+    public float meleeDamage = 1f;
+    public float knockbackForce = 5f;
 
     private Rigidbody2D rb;
     private Vector2 movement;
@@ -41,6 +48,11 @@ public class PlayerController : MonoBehaviour
         {
             Shoot();
         }
+
+        if (Input.GetButtonDown("Fire2"))
+        {
+            MeleeAttack();
+        }
     }
 
     void FixedUpdate()
@@ -58,8 +70,7 @@ public class PlayerController : MonoBehaviour
         {
             GameObject spawnedWeapon = Instantiate(spinningWeaponPrefab, firePoint.position, firePoint.rotation);
 
-            Vector3 originalScale = spawnedWeapon.transform.localScale;
-            spawnedWeapon.transform.localScale = originalScale * weaponScaleMultiplier;
+            spawnedWeapon.GetComponent<SpinningWeapon>().damage += rangedDamageBonus;
             
             currentAmmo--;
             UpdateAmmoUI();
@@ -67,6 +78,22 @@ public class PlayerController : MonoBehaviour
         else
         {
             Debug.Log("Ammo out!");
+        }
+    }
+
+    void MeleeAttack()
+    {
+        Collider2D[] hitZombies = Physics2D.OverlapCircleAll(meleePoint.position, meleeRange);
+
+        foreach (Collider2D hit in hitZombies)
+        {
+            if (hit.CompareTag("Zombie"))
+            {
+                Vector2 knockbackDir = (hit.transform.position - transform.position).normalized;
+
+                hit.GetComponent<ZombieController>().TakeDamage(meleeDamage, knockbackDir, knockbackForce);
+                Debug.Log("Slam!!!");
+            }
         }
     }
 
@@ -83,5 +110,12 @@ public class PlayerController : MonoBehaviour
         currentAmmo += amount;
         if (currentAmmo > maxAmmo) currentAmmo = maxAmmo;
         UpdateAmmoUI();
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (meleePoint == null) return;
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(meleePoint.position, meleeRange);
     }
 }

@@ -20,7 +20,7 @@ public class IntermissionManager : MonoBehaviour
 
     public void SelectUpgradeWeapon()
     {
-        player.weaponScaleMultiplier += 0.5f;
+        player.rangedDamageBonus += 0.5f;
 
         Debug.Log("Upgrade approve!");
         CloseIntermission();

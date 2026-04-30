@@ -5,6 +5,9 @@ public class SpinningWeapon : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 10f;
 
+    [Header("Damage")]
+    public float damage = 1f;
+
     [Header("RotationalMotion")]
     public float targetAngularVelocity = 1000f;
     public float timeToReachSpeed = 0.5f;
@@ -31,6 +34,7 @@ public class SpinningWeapon : MonoBehaviour
     {
         if (col.CompareTag("Zombie")) //if detect 'zombie'
         {
+            col.GetComponent<ZombieController>().TakeDamage(damage);
             Destroy(gameObject); 
         }
         else if (col.CompareTag("Wall")) //if detect 'wall'

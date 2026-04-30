@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class WaveManager : MonoBehaviour
 {
@@ -20,9 +21,17 @@ public class WaveManager : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI waveTextUI;
 
+    [Header("Timer")]
+    public TextMeshProUGUI timerTextUI;
+    public GameObject endGamePanel;
+    public TextMeshProUGUI finalTimeText;
+
     private int currentWaveIndex = 0;
     private int zombiesAlive = 0;
     private bool isIntermission = false;
+
+    private float gameTimer = 0f;
+    private bool isGameActive = true;
 
     private IntermissionManager intermissionManager;
 
@@ -34,6 +43,12 @@ public class WaveManager : MonoBehaviour
 
     void Update()
     {
+        if (isGameActive)
+        {
+            gameTimer += Time.deltaTime;
+            UpdateTimerUI();
+        }
+
         if (zombiesAlive == 0 && !isIntermission)
         {
             isIntermission = true;
@@ -48,8 +63,18 @@ public class WaveManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("Finally, YOU survive!");
+                EndGame();
             }
+        }
+    }
+
+    void UpdateTimerUI()
+    {
+        if (timerTextUI != null)
+        {
+            int minutes = Mathf.FloorToInt(gameTimer / 60F);
+            int seconds = Mathf.FloorToInt(gameTimer - minutes * 60);
+            timerTextUI.text = string.Format("{0:00}:{1:00}", minutes, seconds);
         }
     }
 
@@ -83,11 +108,30 @@ public class WaveManager : MonoBehaviour
     void SpawnZombie()
     {
         Transform randomSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        Instantiate(zombiePrefab, randomSpawnPoint.position, randomSpawnPoint.rotation);
+        GameObject spawnedZombie = Instantiate(zombiePrefab, randomSpawnPoint.position, randomSpawnPoint.rotation);
+
+        spawnedZombie.GetComponent<ZombieController>().ApplyWaveBuff(currentWaveIndex);
     }
 
     public void ZombieDied()
     {
         zombiesAlive--;
+    }
+
+    void EndGame()
+    {
+        isGameActive = false;
+        endGamePanel.SetActive(true);
+        Time.timeScale = 0f;
+
+        int minutes = Mathf.FloorToInt(gameTimer / 60F);
+        int seconds = Mathf.FloorToInt(gameTimer - minutes * 60);
+        finalTimeText.text = "You Survive : " + string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    public void GoToCreditsScene()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Credits");
     }
 }
