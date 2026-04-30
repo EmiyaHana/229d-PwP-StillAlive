@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
     private bool isInvincible = false;
     private SpriteRenderer spriteRenderer;
 
+    [Header("UI System")]
+    public HealthHUD healthUI;
+
     [Header("Weapon Range")]
     public GameObject spinningWeaponPrefab;
     public Transform firePoint;
@@ -48,6 +51,8 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         spriteRenderer = GetComponent<SpriteRenderer>();
 
+        if (healthUI != null) healthUI.UpdateHearts(currentHealth);
+
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
     }
@@ -58,6 +63,8 @@ public class PlayerController : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
 
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+
+        if (Time.timeScale == 0f) return;
 
         if (invincibilityTimer > 0)
         {
@@ -146,6 +153,8 @@ public class PlayerController : MonoBehaviour
         if (isInvincible) return;
 
         currentHealth -= damage;
+        if (healthUI != null) healthUI.UpdateHearts(currentHealth);
+
         Debug.Log("You got hit. HP remain  : " + currentHealth + "HP.");
 
         if (currentHealth <= 0)

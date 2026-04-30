@@ -144,6 +144,18 @@ public class WaveManager : MonoBehaviour
         gameOverTimeText.text = "Survival Time : " + string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void LoadMainMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void GoToCreditsScene()
     {
         Time.timeScale = 1f;
