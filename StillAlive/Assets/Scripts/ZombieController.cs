@@ -60,6 +60,12 @@ public class ZombieController : MonoBehaviour
         {
             Instantiate(ammoBoxPrefab, transform.position, Quaternion.identity);
         }
+
+        WaveManager waveManager = FindObjectOfType<WaveManager>();
+        if (waveManager != null)
+        {
+            waveManager.ZombieDied();
+        }
         
         Destroy(gameObject);
     }
