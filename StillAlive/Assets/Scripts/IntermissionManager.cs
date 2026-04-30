@@ -8,8 +8,8 @@ public class IntermissionManager : MonoBehaviour
 
     void Start()
     {
-        waveManager = FindObjectOfType<WaveManager>();
-        player = FindObjectOfType<PlayerController>();
+        waveManager = Object.FindFirstObjectByType<WaveManager>();
+        player = Object.FindFirstObjectByType<PlayerController>();
     }
 
     public void ShowIntermission()

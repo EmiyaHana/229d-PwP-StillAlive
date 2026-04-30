@@ -26,6 +26,10 @@ public class WaveManager : MonoBehaviour
     public GameObject endGamePanel;
     public TextMeshProUGUI finalTimeText;
 
+    [Header("Game Over Panel")]
+    public GameObject gameOverPanel;
+    public TextMeshProUGUI gameOverTimeText;
+
     private int currentWaveIndex = 0;
     private int zombiesAlive = 0;
     private bool isIntermission = false;
@@ -37,7 +41,7 @@ public class WaveManager : MonoBehaviour
 
     void Start()
     {
-        intermissionManager = FindObjectOfType<IntermissionManager>();
+        intermissionManager = FindFirstObjectByType<IntermissionManager>();
         StartCoroutine(StartWave());
     }
 
@@ -118,15 +122,26 @@ public class WaveManager : MonoBehaviour
         zombiesAlive--;
     }
 
-    void EndGame()
+    public void EndGame()
     {
         isGameActive = false;
+        Time.timeScale = 0f;
         endGamePanel.SetActive(true);
+
+        int minutes = Mathf.FloorToInt(gameTimer / 60F);
+        int seconds = Mathf.FloorToInt(gameTimer - minutes * 60);
+        finalTimeText.text = "Survival Time: " + string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    public void GameOver()
+    {
+        isGameActive = false;
+        gameOverPanel.SetActive(true);
         Time.timeScale = 0f;
 
         int minutes = Mathf.FloorToInt(gameTimer / 60F);
         int seconds = Mathf.FloorToInt(gameTimer - minutes * 60);
-        finalTimeText.text = "You Survive : " + string.Format("{0:00}:{1:00}", minutes, seconds);
+        gameOverTimeText.text = "Survival Time : " + string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     public void GoToCreditsScene()

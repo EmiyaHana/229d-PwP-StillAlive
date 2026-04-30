@@ -46,6 +46,14 @@ public class ZombieController : MonoBehaviour
         }
     }
 
+    void OnTriggerStay2D(Collider2D col) //use Trigger2D to detect player
+    {
+        if (col.CompareTag("Player"))
+        {
+            col.GetComponent<PlayerController>().TakeDamage(1);
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D col) //use Trigger2D to detect weapon
     {
         if (col.CompareTag("Weapon"))
@@ -88,7 +96,7 @@ public class ZombieController : MonoBehaviour
             Instantiate(ammoBoxPrefab, transform.position, Quaternion.identity);
         }
 
-        WaveManager waveManager = FindObjectOfType<WaveManager>();
+        WaveManager waveManager = Object.FindFirstObjectByType<WaveManager>();
         if (waveManager != null)
         {
             waveManager.ZombieDied();

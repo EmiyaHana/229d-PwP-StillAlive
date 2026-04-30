@@ -8,6 +8,14 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public Camera cam;
 
+    [Header("HPSetting")]
+    public int maxHealth = 3;
+    public int currentHealth;
+    public float invincibilityDuration = 1.5f;
+    private float invincibilityTimer = 0f;
+    private bool isInvincible = false;
+    private SpriteRenderer spriteRenderer;
+
     [Header("Weapon Range")]
     public GameObject spinningWeaponPrefab;
     public Transform firePoint;
@@ -37,6 +45,9 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
 
+        currentHealth = maxHealth;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
     }
@@ -47,6 +58,20 @@ public class PlayerController : MonoBehaviour
         movement.y = Input.GetAxisRaw("Vertical");
 
         mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+
+        if (invincibilityTimer > 0)
+        {
+            invincibilityTimer -= Time.deltaTime;
+
+            float alpha = Mathf.PingPong(Time.time * 10f, 1f);
+            spriteRenderer.color = new Color(1, 1, 1, alpha);
+        }
+
+        else if (isInvincible)
+        {
+            isInvincible = false;
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+        }
 
         if (Input.GetButtonDown("Fire1"))
         {
@@ -116,6 +141,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TakeDamage(int damage)
+    {
+        if (isInvincible) return;
+
+        currentHealth -= damage;
+        Debug.Log("You got hit. HP remain  : " + currentHealth + "HP.");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+        else
+        {
+            isInvincible = true;
+            invincibilityTimer = invincibilityDuration;
+        }
+    }
+
     public void UpdateAmmoUI()
     {
         if (ammoTextUI != null)
@@ -129,6 +172,12 @@ public class PlayerController : MonoBehaviour
         currentAmmo += amount;
         if (currentAmmo > maxAmmo) currentAmmo = maxAmmo;
         UpdateAmmoUI();
+    }
+
+    void Die()
+    {
+        Object.FindFirstObjectByType<WaveManager>().GameOver(); 
+        this.enabled = false;
     }
 
     void OnDrawGizmosSelected()
