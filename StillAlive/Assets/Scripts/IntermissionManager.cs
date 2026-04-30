@@ -20,7 +20,7 @@ public class IntermissionManager : MonoBehaviour
 
     public void SelectUpgradeWeapon()
     {
-        player.rangedDamageBonus += 0.5f;
+        player.rangedDamageBonus += 0.2f;
 
         Debug.Log("Upgrade approve!");
         CloseIntermission();
@@ -29,7 +29,7 @@ public class IntermissionManager : MonoBehaviour
     public void SelectMaxAmmo()
     {
         player.maxAmmo += 5;
-        player.AddAmmo(999);
+        player.AddAmmo(5);
         Debug.Log("Increase ammo approve!");
         CloseIntermission();
     }

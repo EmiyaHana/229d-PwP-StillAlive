@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,8 +23,11 @@ public class PlayerController : MonoBehaviour
     [Header("Melee Weapon")]
     public Transform meleePoint;
     public float meleeRange = 1.5f;
-    public float meleeDamage = 1f;
+    public float meleeDamage = 0.5f;
     public float knockbackForce = 5f;
+
+    public float meleeCooldown = 1.5f;
+    private float nextMeleeTime = 0f;
 
     private Rigidbody2D rb;
     private Vector2 movement;
@@ -51,7 +55,15 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Fire2"))
         {
-            MeleeAttack();
+            if (Time.time >= nextMeleeTime) 
+            {
+                MeleeAttack();
+                nextMeleeTime = Time.time + meleeCooldown; 
+            }
+            else
+            {
+                Debug.Log("Cooldowning...");
+            }
         }
     }
 
@@ -85,14 +97,21 @@ public class PlayerController : MonoBehaviour
     {
         Collider2D[] hitZombies = Physics2D.OverlapCircleAll(meleePoint.position, meleeRange);
 
+        List<GameObject> alreadyHitZombies = new List<GameObject>();
+
         foreach (Collider2D hit in hitZombies)
         {
             if (hit.CompareTag("Zombie"))
             {
-                Vector2 knockbackDir = (hit.transform.position - transform.position).normalized;
+                if (!alreadyHitZombies.Contains(hit.gameObject))
+                {
+                    Vector2 knockbackDir = (hit.transform.position - transform.position).normalized;
+                    hit.GetComponent<ZombieController>().TakeDamage(meleeDamage, knockbackDir, knockbackForce);
 
-                hit.GetComponent<ZombieController>().TakeDamage(meleeDamage, knockbackDir, knockbackForce);
-                Debug.Log("Slam!!!");
+                    alreadyHitZombies.Add(hit.gameObject);
+
+                    Debug.Log("Slam!!!");
+                }
             }
         }
     }

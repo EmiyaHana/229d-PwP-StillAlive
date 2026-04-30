@@ -14,6 +14,8 @@ public class ZombieController : MonoBehaviour
     private Transform player;
     private Rigidbody2D rb;
 
+    private bool isDead = false;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -54,6 +56,8 @@ public class ZombieController : MonoBehaviour
 
     public void TakeDamage(float damage, Vector2 knockbackDir = default, float knockbackForce = 0f)
     {
+        if (isDead) return;
+
         currentHealth -= damage;
 
         if (knockbackForce > 0)
@@ -65,6 +69,7 @@ public class ZombieController : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            isDead = true;
             Die();
         }
     }

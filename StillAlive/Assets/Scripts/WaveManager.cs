@@ -49,7 +49,7 @@ public class WaveManager : MonoBehaviour
             UpdateTimerUI();
         }
 
-        if (zombiesAlive == 0 && !isIntermission)
+        if (zombiesAlive <= 0 && !isIntermission)
         {
             isIntermission = true;
             currentWaveIndex++;

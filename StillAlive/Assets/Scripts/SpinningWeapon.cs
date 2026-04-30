@@ -18,16 +18,14 @@ public class SpinningWeapon : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
         rb.linearVelocity = transform.up * moveSpeed; 
-
         momentOfInertia = rb.inertia; //Inertia for object
 
         float angularAcceleration = targetAngularVelocity / timeToReachSpeed; //Calculates for Acceleration
-
         float appliedTorque = momentOfInertia * angularAcceleration; //calculates for Torque force (Tau = I * Alpha)
-
         rb.AddTorque(appliedTorque);
+
+        Destroy(gameObject, 2.5f);
     }
 
     void OnTriggerEnter2D(Collider2D col) //Use Collision2D for detect object
@@ -35,7 +33,6 @@ public class SpinningWeapon : MonoBehaviour
         if (col.CompareTag("Zombie")) //if detect 'zombie'
         {
             col.GetComponent<ZombieController>().TakeDamage(damage);
-            Destroy(gameObject); 
         }
         else if (col.CompareTag("Wall")) //if detect 'wall'
         {

@@ -853,12 +853,15 @@ MonoBehaviour:
   cam: {fileID: 519420031}
   spinningWeaponPrefab: {fileID: 3436478211824663758, guid: c028beb870078cb4cb6060dd97c527c7, type: 3}
   firePoint: {fileID: 1033638625}
+  rangedDamageBonus: 0
   weaponScaleMultiplier: 1
   maxAmmo: 10
   ammoTextUI: {fileID: 1924448062}
   meleePoint: {fileID: 2105964862}
   meleeRange: 1.5
-  meleeDamage: 1
+  meleeDamage: 0.5
+  knockbackForce: 5
+  meleeCooldown: 1.5
 --- !u!1 &651343514
 GameObject:
   m_ObjectHideFlags: 0
