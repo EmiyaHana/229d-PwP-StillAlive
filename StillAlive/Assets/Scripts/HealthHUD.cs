@@ -13,11 +13,11 @@ public class HealthHUD : MonoBehaviour
         {
             if (i < currentHealth)
             {
-                hearts[i].enabled = true; // หรือเปลี่ยน Sprite: hearts[i].sprite = fullHeart;
+                Sprite: hearts[i].sprite = fullHeart;
             }
             else
             {
-                hearts[i].enabled = false; // หรือเปลี่ยน Sprite: hearts[i].sprite = emptyHeart;
+                Sprite: hearts[i].sprite = emptyHeart;
             }
         }
     }
