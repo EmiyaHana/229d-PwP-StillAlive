@@ -438,7 +438,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Left Mouse : Shoot your saw blade\nRight Mouse : Melee Attack\n\nStory
     : \nYou are survivor who struggle to be alive in this land\nNo matter what happen,
-    you knew you still alive...\nSurvive from those zombies and be still alive."
+    you knew you still alive...\nSurvive from those monsters and be still alive."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1777,7 +1777,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2045007384
 MonoBehaviour:
   m_ObjectHideFlags: 0
