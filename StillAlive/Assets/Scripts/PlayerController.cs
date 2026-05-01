@@ -24,8 +24,6 @@ public class PlayerController : MonoBehaviour
     public Transform firePoint;
     [HideInInspector] public float rangedDamageBonus = 0f;
 
-    [HideInInspector] public float weaponScaleMultiplier = 1f;
-
     [Header("Ammo System")]
     public int maxAmmo = 10;
     private int currentAmmo;
@@ -36,6 +34,10 @@ public class PlayerController : MonoBehaviour
     public float meleeRange = 1.5f;
     public float meleeDamage = 0.5f;
     public float knockbackForce = 5f;
+
+    [Header("Melee Visual")]
+    public GameObject meleeWeaponPivot;
+    public float swingDuration = 0.15f;
 
     public float meleeCooldown = 1.5f;
     private float nextMeleeTime = 0f;
@@ -90,6 +92,9 @@ public class PlayerController : MonoBehaviour
             if (Time.time >= nextMeleeTime) 
             {
                 MeleeAttack();
+
+                if (meleeWeaponPivot != null) StartCoroutine(SwingMeleeWeapon());
+
                 nextMeleeTime = Time.time + meleeCooldown; 
             }
             else
@@ -146,6 +151,24 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    System.Collections.IEnumerator SwingMeleeWeapon()
+    {
+        meleeWeaponPivot.SetActive(true);
+        
+        float elapsedTime = 0f;
+        Quaternion startRot = Quaternion.Euler(0, 0, 60f);
+        Quaternion endRot = Quaternion.Euler(0, 0, -60f);
+
+        while (elapsedTime < swingDuration)
+        {
+            meleeWeaponPivot.transform.localRotation = Quaternion.Slerp(startRot, endRot, elapsedTime / swingDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        meleeWeaponPivot.SetActive(false);
     }
 
     public void TakeDamage(int damage)

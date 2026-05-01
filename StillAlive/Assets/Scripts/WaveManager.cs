@@ -34,6 +34,7 @@ public class WaveManager : MonoBehaviour
     private int zombiesAlive = 0;
     private bool isIntermission = false;
 
+    [Header("Game Over Panel")]
     private float gameTimer = 0f;
     private bool isGameActive = true;
 
