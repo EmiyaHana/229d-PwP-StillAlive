@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f;
     public Camera cam;
 
+    [Tooltip("Offset")]
+    public float angleOffset = 0f;
+
     [Header("HPSetting")]
     public int maxHealth = 3;
     public int currentHealth;
@@ -23,6 +26,8 @@ public class PlayerController : MonoBehaviour
     public GameObject spinningWeaponPrefab;
     public Transform firePoint;
     [HideInInspector] public float rangedDamageBonus = 0f;
+
+    [HideInInspector] public float weaponScaleMultiplier = 1f;
 
     [Header("Ammo System")]
     public int maxAmmo = 10;
@@ -49,9 +54,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
         currentHealth = maxHealth;
-        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         if (healthUI != null) healthUI.UpdateHearts(currentHealth);
 
@@ -71,15 +76,17 @@ public class PlayerController : MonoBehaviour
         if (invincibilityTimer > 0)
         {
             invincibilityTimer -= Time.deltaTime;
-
-            float alpha = Mathf.PingPong(Time.time * 10f, 1f);
-            spriteRenderer.color = new Color(1, 1, 1, alpha);
+            if(spriteRenderer != null)
+            {
+                float alpha = Mathf.PingPong(Time.time * 10f, 1f);
+                spriteRenderer.color = new Color(1, 1, 1, alpha);
+            }
         }
 
         else if (isInvincible)
         {
             isInvincible = false;
-            spriteRenderer.color = new Color(1, 1, 1, 1);
+            if(spriteRenderer != null) spriteRenderer.color = new Color(1, 1, 1, 1);
         }
 
         if (Input.GetButtonDown("Fire1"))
@@ -97,10 +104,6 @@ public class PlayerController : MonoBehaviour
 
                 nextMeleeTime = Time.time + meleeCooldown; 
             }
-            else
-            {
-                Debug.Log("Cooldowning...");
-            }
         }
     }
 
@@ -109,7 +112,8 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(rb.position + movement.normalized * moveSpeed * Time.fixedDeltaTime);
 
         Vector2 lookDir = mousePos - rb.position;
-        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg - 90f;
+        float angle = Mathf.Atan2(lookDir.y, lookDir.x) * Mathf.Rad2Deg + angleOffset;
+
         rb.rotation = angle;
     }
 
@@ -123,10 +127,6 @@ public class PlayerController : MonoBehaviour
             
             currentAmmo--;
             UpdateAmmoUI();
-        }
-        else
-        {
-            Debug.Log("Ammo out!");
         }
     }
 
@@ -146,8 +146,6 @@ public class PlayerController : MonoBehaviour
                     hit.GetComponent<ZombieController>().TakeDamage(meleeDamage, knockbackDir, knockbackForce);
 
                     alreadyHitZombies.Add(hit.gameObject);
-
-                    Debug.Log("Slam!!!");
                 }
             }
         }
@@ -177,8 +175,6 @@ public class PlayerController : MonoBehaviour
 
         currentHealth -= damage;
         if (healthUI != null) healthUI.UpdateHearts(currentHealth);
-
-        Debug.Log("You got hit. HP remain  : " + currentHealth + "HP.");
 
         if (currentHealth <= 0)
         {

@@ -18,7 +18,7 @@ public class SpinningWeapon : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.linearVelocity = transform.up * moveSpeed; 
+        rb.linearVelocity = -transform.up* moveSpeed;
         momentOfInertia = rb.inertia; //Inertia for object
 
         float angularAcceleration = targetAngularVelocity / timeToReachSpeed; //Calculates for Acceleration
